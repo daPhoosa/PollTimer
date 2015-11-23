@@ -20,7 +20,20 @@ PollTimer::PollTimer(unsigned long Hz)
 
 void PollTimer::start()
 {
-	nextExecute = micros() + period_us;
+	unsigned long timeNow = micros();
+	
+	nextExecute = timeNow + period_us;
+	
+	if(nextExecute < timeNow)  // detect roll over of future execute time
+	{
+		NoRolloverFlag = 0; // unset flag to prevent execution until timer also rolls over
+	}
+	else
+	{
+		NoRolloverFlag = 1; // flag set for normal operation
+	}
+	
+	lastCheckTime = timeNow;
 }
 
 
