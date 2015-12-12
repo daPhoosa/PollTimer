@@ -3,6 +3,13 @@
  * by Phillip Schmidt
  * v1.0
  *	
+ *	Object Creation: PollTimer TimerObject(100UL); // run this loop at 100Hz
+ *
+ *	Time Check: TimerObject.check()  // this will return true only once per cycle
+ *
+ *	Loop time integer us: TimerObject.us();
+ *
+ *	Loop time float decimal seconds: TimerObject.dt();
  */
 
 
