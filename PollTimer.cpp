@@ -1,15 +1,20 @@
 /* 
- * PollTimer
- * by Phillip Schmidt
- * v1.0
- *	
- *	Object Creation: PollTimer TimerObject(100UL); // run this loop at 100Hz
- *
- *	Time Check: TimerObject.check()  // this will return true only once per cycle
- *
- *	Loop time integer us: TimerObject.us();
- *
- *	Loop time float decimal seconds: TimerObject.dt();
+      PollTimer
+      Copyright (C) 2016  Phillip J Schmidt
+      
+         This program is free software: you can redistribute it and/or modify
+         it under the terms of the GNU General Public License as published by
+         the Free Software Foundation, either version 3 of the License, or
+         (at your option) any later version.
+         
+         This program is distributed in the hope that it will be useful,
+         but WITHOUT ANY WARRANTY; without even the implied warranty of
+         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         GNU General Public License for more details.
+         
+         You should have received a copy of the GNU General Public License
+         along with this program.  If not, see <http://www.gnu.org/licenses/>
+         
  */
 
 
@@ -34,14 +39,27 @@ void PollTimer::start()
 bool PollTimer::check()
 {
    timeLast = timeNow;
-	timeNow  = micros();
-   
+   timeNow  = micros();
+
+   if( timeNow < timeLast ) // timer roll-over detected -- must check every run
+   {
+      if( rollOverDetected )
+      {
+         rollOverDetected = false; // expected rollover, unset flag
+      }
+      else
+      {
+         while(nextExecute > period_us) // this may execute multiple times if the check is grossly late
+         {
+            nextExecute += period_us; // unexpected rollover -- nextExecute time was passed and timer rollover happened between checks
+         }
+         return true;
+      }
+   }   
+
    if( rollOverDetected )
    {
-      if( timeNow < timeLast ) // timer roll-over detected
-      {
-         rollOverDetected = false;
-      }      
+      // do nothing until timer rolls over as well
    }
 	else if( timeNow > nextExecute )
 	{
@@ -49,7 +67,7 @@ bool PollTimer::check()
       
       if( nextExecute < period_us ) // future execute time roll-over detected
       {
-         rollOverDetected = true;
+         rollOverDetected = true; // set rollover flag
       }
       
 		return true;
