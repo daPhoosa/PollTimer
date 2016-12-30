@@ -16,7 +16,7 @@
 #include "PollTimer.h"
 
 
-PollTimer::PollTimer(unsigned long Hz)
+PollTimer::PollTimer( unsigned long Hz )
 {
 	period_us = 1000000UL / Hz;
 	period_dt = 1.0f / float(Hz);
@@ -27,46 +27,34 @@ PollTimer::PollTimer(unsigned long Hz)
 
 void PollTimer::start()
 {
-	unsigned long timeNow = micros();
-	
-	nextExecute = timeNow + period_us;
-	
-	if(nextExecute < timeNow)  // detect roll over of future execute time
-	{
-		NoRolloverFlag = 0; // unset flag to prevent execution until timer also rolls over
-	}
-	else
-	{
-		NoRolloverFlag = 1; // flag set for normal operation
-	}
-	
-	lastCheckTime = timeNow;
+   nextExecute = micros() + period_us;
 }
 
 
 bool PollTimer::check()
 {
-	unsigned long timeNow = micros();
-	
-	if(timeNow < lastCheckTime) // reset flag once timer rolls over
-	{
-		NoRolloverFlag = 1;
-	}
-	
-	if(timeNow > nextExecute && NoRolloverFlag)
+   timeLast = timeNow;
+	timeNow  = micros();
+   
+   if( rollOverDetected )
+   {
+      if( timeNow < timeLast ) // timer roll-over detected
+      {
+         rollOverDetected = false;
+      }      
+   }
+	else if( timeNow > nextExecute )
 	{
 		nextExecute += period_us;
-		
-		if(nextExecute < timeNow)  // detect roll over of future execute time
-		{
-			NoRolloverFlag = 0; // unset flag to prevent execution until timer also rolls over
-		}
-		
-		lastCheckTime = timeNow;
-		
+      
+      if( nextExecute < period_us ) // future execute time roll-over detected
+      {
+         rollOverDetected = true;
+      }
+      
 		return true;
 	}
-	
+
 	return false;
 }
 
