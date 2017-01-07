@@ -38,42 +38,13 @@ void PollTimer::start()
 
 bool PollTimer::check()
 {
-   timeLast = timeNow;
-   timeNow  = micros();
-
-   if( timeNow < timeLast ) // timer roll-over detected -- must check every run
+   if(nextExecute - micros() > period_us)  // this logic handles timer roll-over properly
    {
-      if( rollOverDetected )
-      {
-         rollOverDetected = false; // expected rollover, unset flag
-      }
-      else
-      {
-         while(nextExecute > period_us) // this may execute multiple times if the check is grossly late
-         {
-            nextExecute += period_us; // unexpected rollover -- nextExecute time was passed and timer rollover happened between checks
-         }
-         return true;
-      }
-   }   
-
-   if( rollOverDetected )
-   {
-      // do nothing until timer rolls over as well
+      nextExecute += period_us;
+      return true;
    }
-	else if( timeNow > nextExecute )
-	{
-		nextExecute += period_us;
-      
-      if( nextExecute < period_us ) // future execute time roll-over detected
-      {
-         rollOverDetected = true; // set rollover flag
-      }
-      
-		return true;
-	}
-
-	return false;
+   
+   return false;
 }
 
 

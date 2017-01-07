@@ -38,11 +38,8 @@
       private:
          unsigned long period_us;	// microseconds
          float period_dt;			// decimal seconds
-
-         unsigned long nextExecute, timeNow, timeLast;
          
-         bool rollOverDetected = false;
-
+         uint32_t nextExecute;
    };
 
 #endif
