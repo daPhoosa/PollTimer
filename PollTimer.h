@@ -31,7 +31,14 @@
          bool check();
          bool precheck(uint32_t earlyTime);
          void start();
-         
+
+         void collectStats();
+         uint32_t getMaxTime();
+         uint32_t getMinTime();
+         uint32_t getAvgTime();
+         uint32_t getCount();
+         void displayStats();
+
          unsigned long us();	// return microseconds
          float dt();				// return decimal seconds
          
@@ -41,6 +48,8 @@
          float period_dt;			// decimal seconds
          
          uint32_t nextExecute;
+         uint32_t statsTimeStart, avgCollector, maxTime, cycleCount;
+         uint32_t minTime = 10000000; // 1Hz is realistic worst case, so 10s should be ok... right?
    };
 
 #endif

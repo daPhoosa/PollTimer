@@ -38,9 +38,11 @@ void PollTimer::start()
 
 bool PollTimer::check()
 {
-   if(nextExecute - micros() > period_us)  // this logic handles timer roll-over properly
+   uint32_t timeNow = micros();
+   if(nextExecute - timeNow > period_us)  // this logic handles timer roll-over properly
    {
       nextExecute += period_us;
+      statsTimeStart = timeNow;
       return true;
    }
    
@@ -56,6 +58,54 @@ bool PollTimer::precheck(uint32_t earlyTime) // this will return true if the tim
    }
    
    return false;      
+}
+
+
+void PollTimer::collectStats()
+{
+   uint32_t runTime = micros() - statsTimeStart;
+
+   cycleCount++;
+   
+   if( runTime > maxTime ) maxTime = runTime;
+   if( runTime < minTime ) minTime = runTime;
+   avgCollector += runTime;  // to do: add rollover detection, maybe
+}
+
+
+uint32_t PollTimer::getMaxTime()
+{
+   return maxTime;
+}
+
+
+uint32_t PollTimer::getMinTime()
+{
+   return minTime;
+}
+
+
+uint32_t PollTimer::getAvgTime()
+{
+   return avgCollector / cycleCount;
+}
+
+
+uint32_t PollTimer::getCount()
+{
+   return cycleCount;
+}
+
+
+void PollTimer::displayStats()
+{
+   #ifdef SERIAL_PORT
+      SERIAL_PORT.print("MIN: ");SERIAL_PORT.println(getMinTime());
+      SERIAL_PORT.print("AVG: ");SERIAL_PORT.println(getAvgTime());
+      SERIAL_PORT.print("MAX: ");SERIAL_PORT.println(getMaxTime());
+      SERIAL_PORT.print("CNT: ");SERIAL_PORT.println(getCount());
+      SERIAL_PORT.println("");
+   #endif
 }
 
 
