@@ -99,13 +99,11 @@ uint32_t PollTimer::getCount()
 
 void PollTimer::displayStats()
 {
-   #ifdef SERIAL_PORT
-      SERIAL_PORT.print("MIN: ");SERIAL_PORT.println(getMinTime());
-      SERIAL_PORT.print("AVG: ");SERIAL_PORT.println(getAvgTime());
-      SERIAL_PORT.print("MAX: ");SERIAL_PORT.println(getMaxTime());
-      SERIAL_PORT.print("CNT: ");SERIAL_PORT.println(getCount());
-      SERIAL_PORT.println("");
-   #endif
+   Serial.print("MIN: ");Serial.println(getMinTime());
+   Serial.print("AVG: ");Serial.println(getAvgTime());
+   Serial.print("MAX: ");Serial.println(getMaxTime());
+   Serial.print("CNT: ");Serial.println(getCount());
+   Serial.println("");
 }
 
 
