@@ -29,6 +29,7 @@
       
          PollTimer(unsigned long Hz);
          bool check();
+         bool precheck(uint32_t earlyTime);
          void start();
          
          unsigned long us();	// return microseconds

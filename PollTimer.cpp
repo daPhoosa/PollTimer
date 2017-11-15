@@ -48,6 +48,17 @@ bool PollTimer::check()
 }
 
 
+bool PollTimer::precheck(uint32_t earlyTime) // this will return true if the time until next execute is less than 'earlyTime', does not reset nextExecute
+{
+   if(nextExecute - micros() > period_us - earlyTime)  
+   {
+      return true;
+   }
+   
+   return false;      
+}
+
+
 unsigned long PollTimer::us()
 {
 	return period_us;
