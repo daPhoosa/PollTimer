@@ -31,6 +31,7 @@
          bool check();
          bool precheck(uint32_t earlyTime);
          void start();
+         void start(int delay);
 
          void collectStats();
          uint32_t getMaxTime();

@@ -27,13 +27,20 @@ PollTimer::PollTimer( unsigned long Hz )
 	period_dt = 1.0f / float(Hz);
 	
 	nextExecute = micros() + period_us;
-      
+
 }
 
 
 void PollTimer::start()
 {
    nextExecute = micros() + period_us;
+}
+
+
+void PollTimer::start(int delay)
+{
+   start();
+   nextExecute += delay;
 }
 
 
