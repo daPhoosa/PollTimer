@@ -31,7 +31,7 @@
          bool check();
          bool precheck(uint32_t earlyTime);
          void start();
-         void start(int delay);
+         void start(uint32_t delay);
 
          void collectStats();
          uint32_t getMaxTime();
@@ -45,7 +45,7 @@
          
          
       private:
-         unsigned long period_us;	// microseconds
+         uint32_t period_us;	// microseconds
          float period_dt;			// decimal seconds
          
          uint32_t nextExecute;
