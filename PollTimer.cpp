@@ -28,6 +28,7 @@ PollTimer::PollTimer( unsigned long Hz )
 	
 	nextExecute = micros() + period_us;
 
+   resetStats();
 }
 
 
@@ -48,8 +49,12 @@ void PollTimer::start(uint32_t delay)
 bool PollTimer::check()
 {
    uint32_t timeNow = micros();
-   if(nextExecute - timeNow > period_us)  // this logic handles timer roll-over properly
+   uint32_t timeCheck = nextExecute - timeNow;
+   if( timeCheck > period_us)  // this logic handles timer roll-over properly
    {
+      uint32_t lateTime = 4294967296UL - timeCheck;
+      if( lateTime > maxLateTime ) maxLateTime = lateTime;
+      lateTimeCollector += lateTime;
       nextExecute += period_us;
       statsTimeStart = timeNow;
       return true;
@@ -96,9 +101,28 @@ uint32_t PollTimer::getMinTime()
 
 uint32_t PollTimer::getAvgTime()
 {
-   return avgCollector / cycleCount;
+   if( cycleCount )
+   {
+      return avgCollector / cycleCount;
+   }
+   return 0;
 }
 
+
+uint32_t PollTimer::getAvgLate()
+{
+   if( cycleCount )
+   {
+      return lateTimeCollector / cycleCount;
+   }
+   return 0;
+}
+
+
+uint32_t PollTimer::getMaxLateTime()
+{
+   return maxLateTime;
+}
 
 uint32_t PollTimer::getCount()
 {
@@ -108,13 +132,25 @@ uint32_t PollTimer::getCount()
 
 void PollTimer::displayStats()
 {
-   Serial.print("MIN: ");Serial.println(getMinTime());
-   Serial.print("AVG: ");Serial.println(getAvgTime());
-   Serial.print("MAX: ");Serial.println(getMaxTime());
-   Serial.print("CNT: ");Serial.println(getCount());
+   Serial.print("RUN MIN:  ");Serial.println(getMinTime());
+   Serial.print("RUN AVG:  ");Serial.println(getAvgTime());
+   Serial.print("RUN MAX:  ");Serial.println(getMaxTime());
+   Serial.print("RUN CNT:  ");Serial.println(getCount());
+   Serial.print("LATE AVG: ");Serial.println(getAvgLate());
+   Serial.print("LATE MAX: ");Serial.println(getMaxLateTime());
    Serial.println("");
 }
 
+
+void PollTimer::resetStats()
+{
+   maxTime = 0;
+   minTime = 10000000; // 1Hz is realistic worst case, so 10s should be ok... right?
+   avgCollector = 0;
+   lateTimeCollector = 0;
+   cycleCount = 0;
+   maxLateTime = 0;
+}
 
 unsigned long PollTimer::us()
 {
