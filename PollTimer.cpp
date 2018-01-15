@@ -52,9 +52,13 @@ bool PollTimer::check()
    uint32_t timeCheck = nextExecute - timeNow;
    if( timeCheck > period_us)  // this logic handles timer roll-over properly
    {
-      uint32_t lateTime = 4294967296UL - timeCheck;
-      if( lateTime > maxLateTime ) maxLateTime = lateTime;
-      lateTimeCollector += lateTime;
+      if( cycleCount ) // throw away first sample
+      {
+         uint32_t lateTime = 4294967296UL - timeCheck;
+         if( lateTime > maxLateTime ) maxLateTime = lateTime;
+         lateTimeCollector += lateTime;
+      }
+      
       nextExecute += period_us;
       statsTimeStart = timeNow;
       return true;
@@ -79,11 +83,15 @@ void PollTimer::collectStats()
 {
    uint32_t runTime = micros() - statsTimeStart;
 
-   cycleCount++;
    
-   if( runTime > maxTime ) maxTime = runTime;
-   if( runTime < minTime ) minTime = runTime;
-   avgCollector += runTime;  // to do: add rollover detection, maybe
+   if( cycleCount ) // throw away first sample
+   {
+      if( runTime > maxTime ) maxTime = runTime;
+      if( runTime < minTime ) minTime = runTime;
+      avgCollector += runTime;  // to do: add rollover detection, maybe
+   }
+ 
+   cycleCount++;
 }
 
 
@@ -103,7 +111,7 @@ uint32_t PollTimer::getAvgTime()
 {
    if( cycleCount )
    {
-      return avgCollector / cycleCount;
+      return avgCollector / (cycleCount - 1);
    }
    return 0;
 }
@@ -113,7 +121,7 @@ uint32_t PollTimer::getAvgLate()
 {
    if( cycleCount )
    {
-      return lateTimeCollector / cycleCount;
+      return lateTimeCollector / (cycleCount - 1);
    }
    return 0;
 }
