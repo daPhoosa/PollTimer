@@ -40,6 +40,7 @@
          uint32_t getCount();
          uint32_t getAvgLate();
          uint32_t getMaxLateTime();
+         float getPctCPU();
          void displayStats();
          void resetStats();
 
@@ -54,6 +55,7 @@
          uint32_t nextExecute;
          uint32_t lateTimeCollector, avgCollector;
          uint32_t statsTimeStart, maxTime, maxLateTime, cycleCount, minTime;
+         uint32_t averageRun;
    };
 
 #endif

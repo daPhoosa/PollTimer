@@ -111,7 +111,8 @@ uint32_t PollTimer::getAvgTime()
 {
    if( cycleCount )
    {
-      return avgCollector / (cycleCount - 1);
+      averageRun = avgCollector / (cycleCount - 1);
+      return averageRun;
    }
    return 0;
 }
@@ -137,6 +138,11 @@ uint32_t PollTimer::getCount()
    return cycleCount;
 }
 
+float PollTimer::getPctCPU()
+{
+   return float( averageRun * 100 ) / float( period_us );
+}
+
 
 void PollTimer::displayStats()
 {
@@ -146,6 +152,7 @@ void PollTimer::displayStats()
    Serial.print("RUN CNT:  ");Serial.println(getCount());
    Serial.print("LATE AVG: ");Serial.println(getAvgLate());
    Serial.print("LATE MAX: ");Serial.println(getMaxLateTime());
+   Serial.print("CPU PCT : ");Serial.println(getPctCPU(), 1);
    Serial.println("");
 }
 
