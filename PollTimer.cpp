@@ -52,7 +52,7 @@ bool PollTimer::check()
    uint32_t timeCheck = nextExecute - timeNow;
    if( timeCheck > period_us)  // this logic handles timer roll-over properly
    {
-      if( cycleCount ) // throw away first sample
+      if( cycleCount ) // throw away first sample ( or bypass if not collecting stats )
       {
          uint32_t lateTime = 4294967296UL - timeCheck;
          if( lateTime > maxLateTime ) maxLateTime = lateTime;
@@ -70,7 +70,8 @@ bool PollTimer::check()
 
 bool PollTimer::precheck(uint32_t earlyTime) // this will return true if the time until next execute is less than 'earlyTime', does not reset nextExecute
 {
-   if(nextExecute - micros() < earlyTime)  
+   uint32_t check = nextExecute - micros();
+   if( check < earlyTime || check > period_us )  // (also returns true if already past next check)
    {
       return true;
    }
