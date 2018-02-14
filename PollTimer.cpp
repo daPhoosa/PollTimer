@@ -110,7 +110,7 @@ uint32_t PollTimer::getMinTime()
 
 uint32_t PollTimer::getAvgTime()
 {
-   if( cycleCount )
+   if( cycleCount > 1 )
    {
       averageRun = avgCollector / (cycleCount - 1);
       return averageRun;
@@ -121,7 +121,7 @@ uint32_t PollTimer::getAvgTime()
 
 uint32_t PollTimer::getAvgLate()
 {
-   if( cycleCount )
+   if( cycleCount > 1 )
    {
       return lateTimeCollector / (cycleCount - 1);
    }
@@ -134,10 +134,12 @@ uint32_t PollTimer::getMaxLateTime()
    return maxLateTime;
 }
 
+
 uint32_t PollTimer::getCount()
 {
    return cycleCount;
 }
+
 
 float PollTimer::getPctCPU()
 {
