@@ -52,11 +52,12 @@ bool PollTimer::check()
    uint32_t timeCheck = nextExecute - timeNow;
    if( timeCheck > period_us)  // this logic handles timer roll-over properly
    {
-      if( cycleCount ) // throw away first sample ( or bypass if not collecting stats )
+      if( statsCount ) // throw away first sample ( or bypass if not collecting stats )
       {
          uint32_t lateTime = 4294967296UL - timeCheck;
          if( lateTime > maxLateTime ) maxLateTime = lateTime;
          lateTimeCollector += lateTime;
+         runCount++;
       }
       
       nextExecute += period_us;
@@ -85,14 +86,14 @@ void PollTimer::collectStats()
    uint32_t runTime = micros() - statsTimeStart;
 
    
-   if( cycleCount ) // throw away first sample
+   if( statsCount ) // throw away first sample
    {
       if( runTime > maxTime ) maxTime = runTime;
       if( runTime < minTime ) minTime = runTime;
       avgCollector += runTime;  // to do: add rollover detection, maybe
    }
  
-   cycleCount++;
+   statsCount++;
 }
 
 
@@ -110,9 +111,9 @@ uint32_t PollTimer::getMinTime()
 
 uint32_t PollTimer::getAvgTime()
 {
-   if( cycleCount > 1 )
+   if( statsCount > 1 )
    {
-      averageRun = avgCollector / (cycleCount - 1);
+      averageRun = avgCollector / (statsCount - 1);
       return averageRun;
    }
    return 0;
@@ -121,9 +122,9 @@ uint32_t PollTimer::getAvgTime()
 
 uint32_t PollTimer::getAvgLate()
 {
-   if( cycleCount > 1 )
+   if( runCount > 1 )
    {
-      return lateTimeCollector / (cycleCount - 1);
+      return lateTimeCollector / (runCount - 1);
    }
    return 0;
 }
@@ -137,7 +138,7 @@ uint32_t PollTimer::getMaxLateTime()
 
 uint32_t PollTimer::getCount()
 {
-   return cycleCount;
+   return runCount;
 }
 
 
@@ -166,7 +167,8 @@ void PollTimer::resetStats()
    minTime = 10000000; // 1Hz is realistic worst case, so 10s should be ok... right?
    avgCollector = 0;
    lateTimeCollector = 0;
-   cycleCount = 0;
+   runCount = 0;
+   statsCount = 0;
    maxLateTime = 0;
 }
 
