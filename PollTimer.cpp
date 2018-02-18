@@ -138,7 +138,7 @@ uint32_t PollTimer::getMaxLateTime()
 
 uint32_t PollTimer::getCount()
 {
-   return runCount;
+   return statsCount;
 }
 
 
