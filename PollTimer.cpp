@@ -114,8 +114,7 @@ uint32_t PollTimer::getAvgTime()
 {
    if( statsCount > 1 )
    {
-      averageRun = avgCollector / (statsCount - 1);
-      return averageRun;
+      return avgCollector / (statsCount - 1);
    }
    return 0;
 }

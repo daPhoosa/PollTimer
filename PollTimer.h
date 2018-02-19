@@ -56,7 +56,6 @@
          uint32_t lateTimeCollector, avgCollector;
          uint32_t statsTimeStart, maxTime, maxLateTime, minTime;
          uint32_t runCount, statsCount;
-         uint32_t averageRun;
    };
 
 #endif
