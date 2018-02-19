@@ -59,7 +59,7 @@ bool PollTimer::check()
          if( lateTime > maxLateTime ) maxLateTime = lateTime;
          lateTimeCollector += lateTime;
          statsTimeStart = timeNow;
-         runCount++;
+         lateCount++;
       }
       
       return true;
@@ -120,9 +120,9 @@ uint32_t PollTimer::getAvgTime()
 
 uint32_t PollTimer::getAvgLate()
 {
-   if( runCount > 1 )
+   if( lateCount > 1 )
    {
-      return lateTimeCollector / (runCount - 1);
+      return lateTimeCollector / (lateCount - 1);
    }
    return 0;
 }
@@ -165,7 +165,7 @@ void PollTimer::resetStats()
    minTime = 1000000; // 1Hz is realistic worst case, so 1s is worst case
    avgCollector = 0;
    lateTimeCollector = 0;
-   runCount = 0;
+   lateCount = 0;
    statsCount = 0;
    maxLateTime = 0;
 }
