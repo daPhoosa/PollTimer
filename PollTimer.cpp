@@ -34,16 +34,14 @@ PollTimer::PollTimer( unsigned long Hz )
 
 void PollTimer::start()
 {
-   uint32_t timeNow = micros();
-   nextExecute = timeNow + period_us;
-   statsTimeStart = nextExecute;
+   start(0);
 }
 
 
 void PollTimer::start(uint32_t delay)
 {
-   start();
-   nextExecute += delay;
+   nextExecute = micros() + period_us + delay;
+   statsTimeStart = nextExecute;
 }
 
 
