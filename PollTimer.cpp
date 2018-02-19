@@ -36,6 +36,7 @@ void PollTimer::start()
 {
    uint32_t timeNow = micros();
    nextExecute = timeNow + period_us;
+   statsTimeStart = nextExecute;
 }
 
 
@@ -52,16 +53,17 @@ bool PollTimer::check()
    uint32_t timeCheck = nextExecute - timeNow;
    if( timeCheck > period_us)  // this logic handles timer roll-over properly
    {
+      nextExecute += period_us;
+
       if( statsCount ) // throw away first sample ( or bypass if not collecting stats )
       {
          uint32_t lateTime = 4294967296UL - timeCheck;
          if( lateTime > maxLateTime ) maxLateTime = lateTime;
          lateTimeCollector += lateTime;
+         statsTimeStart = timeNow;
          runCount++;
       }
       
-      nextExecute += period_us;
-      statsTimeStart = timeNow;
       return true;
    }
    
@@ -85,7 +87,6 @@ void PollTimer::collectStats()
 {
    uint32_t runTime = micros() - statsTimeStart;
 
-   
    if( statsCount ) // throw away first sample
    {
       if( runTime > maxTime ) maxTime = runTime;
@@ -164,13 +165,14 @@ void PollTimer::displayStats()
 void PollTimer::resetStats()
 {
    maxTime = 0;
-   minTime = 10000000; // 1Hz is realistic worst case, so 10s should be ok... right?
+   minTime = 1000000; // 1Hz is realistic worst case, so 1s is worst case
    avgCollector = 0;
    lateTimeCollector = 0;
    runCount = 0;
    statsCount = 0;
    maxLateTime = 0;
 }
+
 
 unsigned long PollTimer::us()
 {
@@ -182,5 +184,3 @@ float PollTimer::dt()
 {
 	return period_dt;
 }
-
-
