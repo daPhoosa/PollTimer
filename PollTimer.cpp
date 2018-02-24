@@ -148,14 +148,17 @@ float PollTimer::getPctCPU()
 
 void PollTimer::displayStats()
 {
-   Serial.print("RUN MIN:  ");Serial.println(getMinTime());
-   Serial.print("RUN AVG:  ");Serial.println(getAvgTime());
-   Serial.print("RUN MAX:  ");Serial.println(getMaxTime());
-   Serial.print("RUN CNT:  ");Serial.println(getCount());
-   Serial.print("LATE AVG: ");Serial.println(getAvgLate());
-   Serial.print("LATE MAX: ");Serial.println(getMaxLateTime());
-   Serial.print("CPU PCT : ");Serial.println(getPctCPU(), 1);
-   Serial.println("");
+   if( Serial )
+   {
+      Serial.print("RUN MIN:  ");Serial.println(getMinTime());
+      Serial.print("RUN AVG:  ");Serial.println(getAvgTime());
+      Serial.print("RUN MAX:  ");Serial.println(getMaxTime());
+      Serial.print("RUN CNT:  ");Serial.println(getCount());
+      Serial.print("LATE AVG: ");Serial.println(getAvgLate());
+      Serial.print("LATE MAX: ");Serial.println(getMaxLateTime());
+      Serial.print("CPU PCT : ");Serial.println(getPctCPU(), 2);
+      Serial.println("");
+   }
 }
 
 
