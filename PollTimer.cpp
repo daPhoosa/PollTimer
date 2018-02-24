@@ -142,7 +142,7 @@ uint32_t PollTimer::getCount()
 
 float PollTimer::getPctCPU()
 {
-   return 100.0f * float( avgCollector ) / float( period_us * statsCount );
+   return 100.0f * float( avgCollector ) / float( period_us * statsCount + 1);
 }
 
 
