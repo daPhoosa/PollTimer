@@ -28,6 +28,7 @@
       public:
       
          PollTimer(unsigned long Hz);
+         void setFrequency( unsigned long Hz );
          bool check();
          bool precheck(uint32_t earlyTime);
          void start();

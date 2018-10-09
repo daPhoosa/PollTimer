@@ -23,12 +23,20 @@
 
 PollTimer::PollTimer( unsigned long Hz )
 {
-	period_us = 1000000UL / Hz;
-	period_dt = 1.0f / float(Hz);
+	setFrequency( Hz );
 	
 	nextExecute = micros() + period_us;
 
    resetStats();
+}
+
+
+void PollTimer::setFrequency( unsigned long Hz )
+{
+   if( Hz < 1 ) Hz = 1;
+   
+   period_us = 1000000UL / Hz;
+	period_dt = 1.0f / float(Hz);
 }
 
 
