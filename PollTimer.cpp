@@ -1,20 +1,20 @@
-/* 
+/*
       PollTimer
       Copyright (C) 2016  Phillip J Schmidt
-      
+
          This program is free software: you can redistribute it and/or modify
          it under the terms of the GNU General Public License as published by
          the Free Software Foundation, either version 3 of the License, or
          (at your option) any later version.
-         
+
          This program is distributed in the hope that it will be useful,
          but WITHOUT ANY WARRANTY; without even the implied warranty of
          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
          GNU General Public License for more details.
-         
+
          You should have received a copy of the GNU General Public License
          along with this program.  If not, see <http://www.gnu.org/licenses/>
-         
+
  */
 
 
@@ -23,9 +23,9 @@
 
 PollTimer::PollTimer( unsigned long Hz )
 {
-	setFrequency( Hz );
-	
-	nextExecute = micros() + period_us;
+   setFrequency( Hz );
+
+   nextExecute = micros() + period_us;
 
    resetStats();
 }
@@ -34,9 +34,9 @@ PollTimer::PollTimer( unsigned long Hz )
 void PollTimer::setFrequency( unsigned long Hz )
 {
    if( Hz < 1 ) Hz = 1;
-   
+
    period_us = 1000000UL / Hz;
-	period_dt = 1.0f / float(Hz);
+   period_dt = 1.0f / float(Hz);
 }
 
 
@@ -69,10 +69,10 @@ bool PollTimer::check()
          statsTimeStart = timeNow;
          lateCount++;
       }
-      
+
       return true;
    }
-   
+
    return false;
 }
 
@@ -84,8 +84,8 @@ bool PollTimer::precheck(uint32_t earlyTime) // this will return true if the tim
    {
       return true;
    }
-   
-   return false;      
+
+   return false;
 }
 
 
@@ -99,7 +99,7 @@ void PollTimer::collectStats()
       if( runTime < minTime ) minTime = runTime;
       avgCollector += runTime;  // to do: add rollover detection, maybe
    }
- 
+
    statsCount++;
 }
 
@@ -184,11 +184,11 @@ void PollTimer::resetStats()
 
 unsigned long PollTimer::us()
 {
-	return period_us;
+   return period_us;
 }
 
 
 float PollTimer::dt()
 {
-	return period_dt;
+   return period_dt;
 }
