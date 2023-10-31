@@ -3,7 +3,7 @@ Poll Timer for simple perodic task timing in Arduino projects
 
 ## Features
 * Task execution at regular intervals without the complexity of interupts or poor coding practices like delays
-* Oject based design for a unlimited number of concurrent timers
+* Object based design for a unlimited number of concurrent timers
 * Handles timer roll-over for seamless use over long periods of time
 * Deterministic timing system insure that future executions are not effected by variations in the call time of previous exectutions
 * Has optional staticstics collection to aid in the analysis task operation
